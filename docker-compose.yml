@@ -1,0 +1,46 @@
+version: '3.3'
+
+services:
+  redis:
+    container_name: your_project_name_redis
+    image: redis:6
+    networks:
+      - your_project_name_default
+    # ports:
+    #   - 6379:6379
+
+  mailcatcher:
+    container_name: your_project_name_mailcatcher
+    image: yappabe/mailcatcher
+    ports:
+      - 1025:1025
+      - 1080:1080
+
+  postgres:
+    container_name: your_project_name_postgres
+    image: postgres:12
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ~/your_project_name/.docker-volumes/your_project_name/postgres/:/var/lib/postgresql/data
+    networks:
+      - your_project_name_default
+    ports:
+      - 5432:5432
+
+  pgadmin:
+    container_name: your_project_name_pgadmin
+    image: dpage/pgadmin4:5.6
+    environment:
+      - 'PGADMIN_DEFAULT_EMAIL=admin@ecommerce.com'
+      - 'PGADMIN_DEFAULT_PASSWORD=12345678'
+    depends_on:
+      - postgres
+    networks:
+      - your_project_name_default
+    ports:
+      - 8080:80
+
+networks:
+  your_project_name_default:
